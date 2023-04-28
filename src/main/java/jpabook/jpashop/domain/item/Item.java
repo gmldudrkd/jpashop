@@ -12,8 +12,8 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) //상속관계 전략
 @DiscriminatorColumn(name = "dtype") // 상속 시 DiscriminatorValue에 설정된 값으로 디비저장
-@Getter
-public class Item {
+@Getter @Setter
+public abstract class Item {
 
     @Id @GeneratedValue
     @Column(name = "item_id")

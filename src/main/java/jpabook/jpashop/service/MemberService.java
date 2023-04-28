@@ -42,6 +42,13 @@ public class MemberService {
         return member.getId();
     }
 
+    @Transactional
+    public void update(Long id, String name){
+        Member member = memberRepository.findOne(id);
+        member.setName(name);
+        //transaction 이 끝나는 시점에 jpa가 변경감지해서 commit
+    }
+
     private void validateDuplicateMember(Member member){
         List<Member> findMembers = memberRepository.findByname(member.getName());
         if (!findMembers.isEmpty()) {
