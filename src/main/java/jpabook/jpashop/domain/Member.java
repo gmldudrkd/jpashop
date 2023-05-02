@@ -24,6 +24,7 @@ public class Member {
     @Embedded //내장타입을 포함
     private Address address;
 
+    @JsonIgnore //양방향 연관관계일 경우 한방향은 끊어줘야한다.
     @OneToMany(mappedBy = "member") //order 테이블(class)의 member에 매핑되어 따라간다
     private List<Order> orders = new ArrayList<>();
 }

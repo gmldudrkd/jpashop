@@ -59,7 +59,7 @@ public class MemberApiController {
                 .map(m -> new MemberDto(m.getName()))
                 .collect(Collectors.toList());
 
-        return new Result(collect.size(), collect); //리스트로 반환된 collect(json 배열 타입) 에 Result 라는 껍데기를 씌워준다. -> {data:[], count:""} 이런 형태를 위해 (유연성)
+        return new Result(collect.size(), collect); //리스트로 반환된 collect(json 배열 타입) 에 Result 라는 껍데기를  씌워준다. -> {data:[], count:""} 이런 형태를 위해 (유연성)
     }
 
     @Data

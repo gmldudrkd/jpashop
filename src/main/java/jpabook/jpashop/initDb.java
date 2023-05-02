@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 
+//주문정보 넣기
 @Component
 @RequiredArgsConstructor
 public class initDb {
