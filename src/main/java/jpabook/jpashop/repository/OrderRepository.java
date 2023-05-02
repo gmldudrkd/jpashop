@@ -81,4 +81,17 @@ public class OrderRepository {
         ).getResultList();
         //fetch join : 조인된 객체를 지연로딩(LAZY)와 관계없이 내용을 select 해서 조인!
     }
+
+    public List<Order> findAllWithItem() {
+        // jpa의 distinct는 엔티티(Order)가 중복일 경우 제거해준다, (원래 데이터베이스는 완전 동일한 로우일 경우제거)
+        //fetch join 의 경우 페이징이 불가, 모든데이터를 조회, 메모리에서 페이징해버림>> 우ㅣ험함!
+        //조인이 많을 수록 데이터의 정합성이 떨어져서 (여러 데이터가 기준없이 혼합되어 나오므로) limit 가 불가
+        return em.createQuery(
+                "select distinct o from Order o"
+                + " join fetch o.member m"
+                + " join fetch  o.delivery d"
+                + " join fetch  o.orderItems oi"
+                + " join fetch  oi.item i" , Order.class)
+                .getResultList();
+    }
 }
