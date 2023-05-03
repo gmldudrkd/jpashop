@@ -94,4 +94,16 @@ public class OrderRepository {
                 + " join fetch  oi.item i" , Order.class)
                 .getResultList();
     }
+
+    //member, delivert (~toOne) 은 페이지 조회가능
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        //fetch join 으로 잡을 수 있는건 조인하고 나머지 tomany 관계는 페이징으로
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
 }

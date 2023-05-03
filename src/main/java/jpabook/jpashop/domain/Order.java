@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.aspectj.weaver.ast.Or;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ public class Order {
     //FK가 가까운 곳이 연관관계의 주인, 주인이 아닌곳에 주인을 mapped
     private Member member;
 
+    @BatchSize(size = 1000) // default_batch_fetch_size 옵션과 동일한 기능 (application.yml), 개별 최적화 > 관련된 아이템을 미리 in query를 날려서 가져옴, size : 몇개를 한번에 in절에 날릴 것인가
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL) //기존은 하나하나 persist items의 값들이 저장되는데 cascade 옵션이 잇을경우 item 컬렉션의 값을 저장해준다!
     private List<OrderItem> orderItems = new ArrayList<>();
     //cascade = CascadeType order entity를 사용하면 casecade 옵션이 있는 item, deleivery는 자동으로 persist됨.
