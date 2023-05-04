@@ -1,8 +1,9 @@
 package jpabook.jpashop.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jpabook.jpashop.api.OrderSimpleApiController;
-import jpabook.jpashop.domain.Member;
-import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Repository;
@@ -37,7 +38,7 @@ public class OrderRepository {
 //                .getResultList();
 //    }
 
-    //JPQL 로 처리
+    //JPQL 로 처리 >> 지저분,,,
     public List<Order> findAllByString(OrderSearch orderSearch) {
         //language=JPAQL
         String jpql = "select o From Order o join o.member m";
@@ -72,6 +73,35 @@ public class OrderRepository {
         }
         return query.getResultList();
     }
+
+    /*********QueryDsl****************/
+    public List<Order> findAll(OrderSearch orderSearch) {
+        QOrder order = QOrder.order;
+        QMember member  = QMember.member;
+
+        JPAQueryFactory query = new JPAQueryFactory(em);
+        return query.select(order)
+                .from(order)
+                .join(order.member, member)
+                .where(statusEq(orderSearch.getOrderStatus()), nameLike(orderSearch.getMemberName())) //null 이반환 되면 버린다 > 동저쿼리
+                .limit(1000)
+                .fetch();
+    }
+
+    private BooleanExpression nameLike(String membername) {
+        if (!StringUtils.hasText(membername)) {
+            return null;
+        }
+        return QMember.member.name.like(membername);
+    }
+
+    private BooleanExpression statusEq(Orderstatus orderstatus) {
+        if (orderstatus == null) {
+            return null;
+        }
+        return QOrder.order.status.eq(orderstatus);
+    }
+    /*******QueryDsl****************/
 
     public List<Order> findAllWithMemberDelivery() {
         return em.createQuery(

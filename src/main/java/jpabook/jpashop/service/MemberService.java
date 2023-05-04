@@ -2,10 +2,9 @@ package jpabook.jpashop.service;
 
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.repository.MemberRepository;
-import lombok.AllArgsConstructor;
+import jpabook.jpashop.repository.MemberRepositoryOld;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,13 +20,13 @@ public class MemberService {
     //@Autowired //빈에 등록된 리포지토리를 인젝션(주입)해줌
 
 //    @Autowired //setter injection - 값을 받아서 주입, 변경이 가능(장점이자 단점)
-//    public void setMemberRepository(MemberRepository memberRepository) {
+//    public void setMemberRepository(MemberRepositoryOld memberRepository) {
 //        this.memberRepository = memberRepository;
 //    }
 
     // AllArgsConstructor 어노테이션이 있으면 생성자 자동생성해서 아래내용 필요없음
 //    //@Autowired //생성자 인젝션 - 생성할 떼 주입완료, 중간에 Set 해도 변경 없음, 테스트 케이스 작성 시 직접주입가능 (autowired 없애도 자동으로 스프링이 인젝션)
-//    public MemberService(MemberRepository memberRepository) {
+//    public MemberService(MemberRepositoryOld memberRepository) {
 //        this.memberRepository = memberRepository;
 //    }
 
@@ -44,7 +43,7 @@ public class MemberService {
 
     @Transactional
     public void update(Long id, String name){
-        Member member = memberRepository.findOne(id);
+        Member member = memberRepository.findById(id).get();
         member.setName(name);
         //transaction 이 끝나는 시점에 jpa가 변경감지해서 commit
     }
@@ -64,6 +63,6 @@ public class MemberService {
 
     //단건조회
     public Member findOne(Long memberId){
-        return memberRepository.findOne(memberId);
+        return memberRepository.findById(memberId).get();
     }
 }

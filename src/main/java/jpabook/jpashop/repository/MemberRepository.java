@@ -1,45 +1,16 @@
 package jpabook.jpashop.repository;
 
 import jpabook.jpashop.domain.Member;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.security.PublicKey;
 import java.util.List;
 
-@Repository //component 스캔에 의해 자동으로 스프링 빈으로 관리가 된다
-@RequiredArgsConstructor
-public class MemberRepository {
-    //@PersistenceContext
-    //@Autowired //아래 생성자 인젝션을 사용하면 부트에서 PersistenceContext를 Autowired로 제공해줌
-//    public MemberRepository(EntityManager em){
-//        this.em = em;
-//    }
+//spring-data-jpa
+//일반화 하기 어려운 기능도 메서드 이름으로 정확한 JPQL쿼리를 실행한다.
 
-    private final EntityManager em;
+public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    public void save(Member member){
-        em.persist(member);
-    }
-
-    public Member findOne(Long id){
-        return em.find(Member.class, id);
-    }
-
-    public List<Member> findAll(){
-        //jpql > entity 객체를 대상으로 쿼리를 진행- from의 대상이 객체(엔티티 멤버 m을 대상으로 조회해!) /  Member.class 는 조회 타입
-        List<Member> result = em.createQuery("select m from Member m", Member.class)
-                .getResultList();
-        return result;
-    }
-
-    public List<Member> findByname(String name){
-        return em.createQuery("select m from Member m where m.name=:name", Member.class)
-                .setParameter("name", name)
-                .getResultList();
-    }
+    // findBy~ 가 있을 경우 > select m from member m where m,name=? 으로 조회함!
+    //따로 메소드를 만들지 않아도 됨! spring-data-jpa
+    List<Member> findByname(String name);
 }
